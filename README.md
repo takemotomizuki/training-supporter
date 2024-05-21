@@ -1,4 +1,10 @@
 # training-supporter（仮）
 
-## 環境構築
-かんがえちう
+## Condaでのrequirememtsの使用方法
+
+```
+cd backend
+conda env create -f  requirements.yaml
+
+```
+
