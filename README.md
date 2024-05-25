@@ -87,3 +87,7 @@ xcodebuild -downloadPlatform iOS
 flutter doctor
 ```
 でオールグリーンならOK
+
+## 試してみる
+Android Studioを開いてプロジェクトからfront/appを選択 \
+エミュレーターをしていして再生ボタンをクリックして実機テストができるか確認
