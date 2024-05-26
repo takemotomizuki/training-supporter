@@ -1,4 +1,7 @@
 # training-supporter（仮）
+## 運用
+当分developmentブランチは必要ないからmainから直接ブランチ生やす \
+基本的に`feature/小タスクID`で運用しようかなと思ってる
 
 ## minicondaインストール方法
 [Miniconda Install 備忘録](https://qiita.com/Ihmon/items/11074e1a4c0e397d934f)
