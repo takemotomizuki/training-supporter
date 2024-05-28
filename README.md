@@ -5,6 +5,13 @@
 
 マージするときはPR必須にしてます。
 
+基本的に`lib`以下にコードを記述していきます。 \
+フォルダ構成は以下の通り
+- `view`アプリの画面単位でファイルを格納
+- `component`ヘッダー、フッターボタンなど使い回す予定のものを格納
+- `pose_detection`姿勢検知のクラスを格納
+- `main.dart`エントリーポイントすべてはここから呼び出す。
+
 ## Flutterインストール方法
 参考[Android Studioを使ったFlutterの開発環境を構築する！](https://qiita.com/Keisuke-Magara/items/e07055cd253881b3b4b4)　\
 記事がWindowsでわかりにくい

@@ -1,3 +1,5 @@
+import 'package:app/component/footer.dart';
+import 'package:app/view/training.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -112,6 +114,15 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Training(title: 'どうも',)),
+                  );
+                },
+                child: Text('カメラ起動')
+            ),
           ],
         ),
       ),
@@ -120,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: Footer(),
     );
   }
 }
