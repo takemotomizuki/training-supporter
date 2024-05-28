@@ -3,14 +3,7 @@
 当分developmentブランチは必要ないからmainから直接ブランチ生やす \
 基本的に`feature/小タスクID`で運用しようかなと思ってる
 
-## minicondaインストール方法
-[Miniconda Install 備忘録](https://qiita.com/Ihmon/items/11074e1a4c0e397d934f)
-
-## requirememtsを用いたCondaでの仮装環境の作成
-```
-cd backend
-conda env create -f requirements.yaml
-```
+マージするときはPR必須にしてます。
 
 ## Flutterインストール方法
 参考[Android Studioを使ったFlutterの開発環境を構築する！](https://qiita.com/Keisuke-Magara/items/e07055cd253881b3b4b4)　\
