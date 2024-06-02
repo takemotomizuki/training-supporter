@@ -42,13 +42,8 @@ class TakePictureScreen extends StatefulWidget {
 //   @override
 //   State<TakePictureScreen> createState() => TakePictureScreenState();
 // }
-  const TakePictureScreen({
-  Key? key,
-  required this.camera,
-  required this.title,
-  }) : super(key: key);
+  const TakePictureScreen({super.key, required this.title});
 
-  final CameraDescription camera;
   final String title;
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -57,6 +52,9 @@ class TakePictureScreen extends StatefulWidget {
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  static List<CameraDescription> cameras = [];
+  final initialCameraLensDirection = CameraLensDirection.back;
+  int cameraIndex = -1;
   // final cameras = await availableCameras();
   // late final cameras = availableCameras();
   // late CameraDescription get camera => cameras[0];
@@ -64,16 +62,31 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   @override
   void initState() {
     super.initState();
+    _initialize();
+    final camera = cameras.first;
 
     _controller = CameraController(
       // カメラを指定
-      widget.camera,
+      camera,
       // 解像度を定義
       ResolutionPreset.medium,
     );
 
     // コントローラーを初期化
     _initializeControllerFuture = _controller.initialize();
+  }
+
+  void _initialize() async {
+
+    if (cameras.isEmpty) {
+      cameras = await availableCameras();
+    }
+    for (var i = 0; i < cameras.length; i++) {
+      if (cameras[i].lensDirection == initialCameraLensDirection) {
+        cameraIndex = i;
+        break;
+      }
+    }
   }
 
   @override
