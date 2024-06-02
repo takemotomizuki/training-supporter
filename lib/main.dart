@@ -1,6 +1,7 @@
 import 'package:app/component/footer.dart';
 import 'package:app/view/training.dart';
 import 'package:flutter/material.dart';
+import 'view/face_detector_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -107,6 +108,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(
+              child: FaceDetectorView(),
+            ),
             const Text(
               'You have pushed the button this many times:',
             ),
