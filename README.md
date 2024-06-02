@@ -1,5 +1,11 @@
 # training-supporter（仮）
 ## 運用
+パッケージの変更があった場合は
+```
+flutter pub get
+```
+をお願いします。
+
 当分developmentブランチは必要ないからmainから直接ブランチ生やす \
 基本的に`feature/小タスクID`で運用しようかなと思ってる
 
@@ -92,5 +98,5 @@ flutter doctor
 でオールグリーンならOK
 
 ## 試してみる
-Android Studioを開いてプロジェクトからfront/appを選択 \
+Android Studioを開いてプロジェクトからこのリポジトリを選択 \
 エミュレーターをしていして再生ボタンをクリックして実機テストができるか確認
