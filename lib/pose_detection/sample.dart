@@ -6,7 +6,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'camera_view.dart';
 
 class FaceDetectorView extends StatefulWidget {
   @override
