@@ -1,13 +1,22 @@
 import 'package:app/component/footer.dart';
 import 'package:app/view/training.dart';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final cameras = await availableCameras();
+  final camera = cameras.first;
+  runApp(MyApp(camera: camera));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+    required this.camera,
+  });
+
+  final CameraDescription camera;
 
   // This widget is the root of your application.
   @override
@@ -33,7 +42,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: TakePictureScreen(camera: camera, title: 'pose',),
     );
   }
 }
@@ -119,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Training(title: 'どうも',)),
+                    // MaterialPageRoute(builder: (context) => TakePictureScreen(camera: this.camera, title: 'Pose_Detector')),
                   );
                 },
                 child: Text('カメラ起動')
