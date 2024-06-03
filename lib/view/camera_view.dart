@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/view/pose_detection_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,6 +90,7 @@ class _CameraViewState extends State<CameraView> {
                 : CameraPreview(
                     _controller!,
                     // child: widget.customPaint,
+                    child: PoseDetectionScreen(),
                   ),
           ),
           _backButton(),
