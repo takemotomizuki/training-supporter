@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 // import 'detector_view.dart';
 // import 'painters/pose_painter.dart';
+import 'pose_detection_screen.dart';
 
 class Training extends StatefulWidget {
   const Training({super.key, required this.title});
@@ -162,6 +163,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     });
     // final poses = await _poseDetector.processImage(inputImage);
     // Todo call method processImage(inputImage); FROM yohei
+    // PoseDetectionScreen();
     final poses = null;
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null) {
