@@ -5,22 +5,23 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
+import 'training.dart';
 
 class CameraView extends StatefulWidget {
   CameraView(
       {Key? key,
-      // required this.customPaint,
+      required this.customPaint,
       required this.onImage,
-      // this.onCameraFeedReady,
-      // this.onDetectorViewModeChanged,
+      this.onCameraFeedReady,
+      this.onDetectorViewModeChanged,
       this.onCameraLensDirectionChanged,
       this.initialCameraLensDirection = CameraLensDirection.back})
       : super(key: key);
 
-  // final CustomPaint? customPaint;
+  final CustomPaint? customPaint;
   final Function(InputImage inputImage) onImage;
-  // final VoidCallback? onCameraFeedReady;
-  // final VoidCallback? onDetectorViewModeChanged;
+  final VoidCallback? onCameraFeedReady;
+  final VoidCallback? onDetectorViewModeChanged;
   final Function(CameraLensDirection direction)? onCameraLensDirectionChanged;
   final CameraLensDirection initialCameraLensDirection;
 
@@ -39,6 +40,7 @@ class _CameraViewState extends State<CameraView> {
   double _maxAvailableExposureOffset = 0.0;
   double _currentExposureOffset = 0.0;
   bool _changingCameraLens = false;
+  bool _isCameraInitialized = false;
 
   @override
   void initState() {
@@ -74,7 +76,11 @@ class _CameraViewState extends State<CameraView> {
   }
 
   Widget _liveFeedBody() {
-    if (_cameras.isEmpty) return Container();
+    if (_cameras.isEmpty) {
+      setState(() {
+        _isCameraInitialized = true;
+      });
+    }
     if (_controller == null) return Container();
     if (_controller?.value.isInitialized == false) return Container();
     return ColoredBox(
@@ -87,15 +93,17 @@ class _CameraViewState extends State<CameraView> {
                 ? Center(
                     child: const Text('Changing camera lens'),
                   )
-                : CameraPreview(
-                    _controller!,
-                    // child: widget.customPaint,
-                    child: PoseDetectionScreen(),
-                  ),
+                : _isCameraInitialized
+                    ? CameraPreview(
+                        _controller!,
+                        child: widget.customPaint,
+                        // child: PoseDetectionScreen(),
+                      )
+                    : const Center(child: CircularProgressIndicator()),
           ),
           _backButton(),
           _switchLiveCameraToggle(),
-          // _detectionViewModeToggle(),
+          _detectionViewModeToggle(),
           _zoomControl(),
           _exposureControl(),
         ],
@@ -121,23 +129,23 @@ class _CameraViewState extends State<CameraView> {
         ),
       );
 
-  // Widget _detectionViewModeToggle() => Positioned(
-  //       bottom: 8,
-  //       left: 8,
-  //       child: SizedBox(
-  //         height: 50.0,
-  //         width: 50.0,
-  //         child: FloatingActionButton(
-  //           heroTag: Object(),
-  //           onPressed: widget.onDetectorViewModeChanged,
-  //           backgroundColor: Colors.black54,
-  //           child: Icon(
-  //             Icons.photo_library_outlined,
-  //             size: 25,
-  //           ),
-  //         ),
-  //       ),
-  //     );
+  Widget _detectionViewModeToggle() => Positioned(
+        bottom: 8,
+        left: 8,
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: FloatingActionButton(
+            heroTag: Object(),
+            onPressed: widget.onDetectorViewModeChanged,
+            backgroundColor: Colors.black54,
+            child: Icon(
+              Icons.photo_library_outlined,
+              size: 25,
+            ),
+          ),
+        ),
+      );
 
   Widget _switchLiveCameraToggle() => Positioned(
         bottom: 8,
@@ -259,6 +267,7 @@ class _CameraViewState extends State<CameraView> {
 
   Future _startLiveFeed() async {
     final camera = _cameras[_cameraIndex];
+
     _controller = CameraController(
       camera,
       // Set to ResolutionPreset.high. Do NOT set it to ResolutionPreset.max because for some phones does NOT work.
@@ -268,7 +277,14 @@ class _CameraViewState extends State<CameraView> {
           ? ImageFormatGroup.nv21
           : ImageFormatGroup.bgra8888,
     );
-    _controller?.initialize().then((_) {
+
+    // await _controller?.initialize();
+    // if (_controller?.value.isInitialized == true) {
+    //   setState(() {
+    //     _isCameraInitialized = true;
+    //   });
+    // }
+    await _controller?.initialize().then((_) {
       if (!mounted) {
         return;
       }
@@ -287,14 +303,16 @@ class _CameraViewState extends State<CameraView> {
         _maxAvailableExposureOffset = value;
       });
       _controller?.startImageStream(_processCameraImage).then((value) {
-        // if (widget.onCameraFeedReady != null) {
-        //   widget.onCameraFeedReady!();
-        // }
+        if (widget.onCameraFeedReady != null) {
+          widget.onCameraFeedReady!();
+        }
         if (widget.onCameraLensDirectionChanged != null) {
           widget.onCameraLensDirectionChanged!(camera.lensDirection);
         }
       });
-      setState(() {});
+      setState(() {
+        _isCameraInitialized = true;
+      });
     });
   }
 
@@ -383,4 +401,8 @@ class _CameraViewState extends State<CameraView> {
       ),
     );
   }
+
+  // You must wait until the controller is initialized before displaying the
+// camera preview. Use a FutureBuilder to display a loading spinner until the
+// controller has finished initializing.
 }
