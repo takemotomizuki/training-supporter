@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app/view/pose_detection_screen.dart';
+import 'package:app/view/pose_detector.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -375,7 +376,6 @@ class _CameraViewState extends State<CameraView> {
     }
     if (rotation == null) return null;
     // print('final rotation: $rotation');
-
     // get image format
     final format = InputImageFormatValue.fromRawValue(image.format.raw);
     // validate format depending on platform
@@ -383,9 +383,23 @@ class _CameraViewState extends State<CameraView> {
     // * nv21 for Android
     // * bgra8888 for iOS
     if (format == null ||
-        (Platform.isAndroid && format != InputImageFormat.nv21) ||
+        (Platform.isAndroid && !(
+            format == InputImageFormat.nv21 ||
+            format == InputImageFormat.yuv_420_888
+        )) ||
         (Platform.isIOS && format != InputImageFormat.bgra8888)) return null;
-
+    if(format == InputImageFormat.yuv_420_888){
+      Uint8List imageUint8 = getNv21Uint8List(image);
+      return InputImage.fromBytes(
+          bytes: imageUint8,
+          metadata: InputImageMetadata(
+            size: Size(image.width.toDouble(), image.height.toDouble()),
+            rotation: rotation, // used only in Android
+            format: format,
+            bytesPerRow: 1
+          )
+      );
+    }
     // since format is constraint to nv21 or bgra8888, both only have one plane
     if (image.planes.length != 1) return null;
     final plane = image.planes.first;
@@ -400,6 +414,56 @@ class _CameraViewState extends State<CameraView> {
         bytesPerRow: plane.bytesPerRow, // used only in iOS
       ),
     );
+  }
+
+  getNv21Uint8List(CameraImage image) {
+    final width = image.width;
+    final height = image.height;
+
+    final yPlane = image.planes[0];
+    final uPlane = image.planes[1];
+    final vPlane = image.planes[2];
+
+    final yBuffer = yPlane.bytes;
+    final uBuffer = uPlane.bytes;
+    final vBuffer = vPlane.bytes;
+
+    final numPixels = (width * height * 1.5).toInt();
+    final nv21 = List<int>.filled(numPixels, 0);
+
+    // Full size Y channel and quarter size U+V channels.
+    int idY = 0;
+    int idUV = width * height;
+    final uvWidth = width ~/ 2;
+    final uvHeight = height ~/ 2;
+    // Copy Y & UV channel.
+    // NV21 format is expected to have YYYYVU packaging.
+    // The U/V planes are guaranteed to have the same row stride and pixel stride.
+    // getRowStride analogue??
+    final uvRowStride = uPlane.bytesPerRow;
+    // getPixelStride analogue
+    final uvPixelStride = uPlane.bytesPerPixel ?? 0;
+    final yRowStride = yPlane.bytesPerRow;
+    final yPixelStride = yPlane.bytesPerPixel ?? 0;
+
+    for (int y = 0; y < height; ++y) {
+      final uvOffset = y * uvRowStride;
+      final yOffset = y * yRowStride;
+
+      for (int x = 0; x < width; ++x) {
+        nv21[idY++] = yBuffer[yOffset + x * yPixelStride];
+
+        if (y < uvHeight && x < uvWidth) {
+          final bufferIndex = uvOffset + (x * uvPixelStride);
+          //V channel
+          nv21[idUV++] = vBuffer[bufferIndex];
+          //V channel
+          nv21[idUV++] = uBuffer[bufferIndex];
+        }
+      }
+    }
+
+    return Uint8List.fromList(nv21);
   }
 
   // You must wait until the controller is initialized before displaying the

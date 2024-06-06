@@ -1,4 +1,5 @@
 import 'package:app/view/camera_view.dart';
+import 'package:app/view/pose_detector.dart';
 import 'package:flutter/material.dart';
 
 // for posedetecter
@@ -69,8 +70,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   static List<CameraDescription> cameras = [];
   final initialCameraLensDirection = CameraLensDirection.back;
   var _cameraLensDirection = CameraLensDirection.back;
-  final PoseDetector _poseDetector =
-      PoseDetector(options: PoseDetectorOptions());
+
   int cameraIndex = -1;
   double _currentZoomLevel = 1.0;
   double _minAvailableZoom = 1.0;
@@ -109,6 +109,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   void initState() {
     _mode = widget.initialDetectionMode;
     super.initState();
+
   }
 
   // void _initialize() async {
@@ -127,7 +128,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   void dispose() async {
     // ウィジェットが破棄されたら、コントローラーを破棄
     // _controller.dispose();
-    _poseDetector.close();
     super.dispose();
   }
 
@@ -144,14 +144,13 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   }
 
   Future<void> _processImage(InputImage inputImage) async {
-    if (!_canProcess) return;
-    if (_isBusy) return;
     _isBusy = true;
     setState(() {
       _text = '';
     });
-    final poses = await _poseDetector.processImage(inputImage);
-    // Todo call method processImage(inputImage); FROM yohei
+    final poses = await PoseDetect.detect(inputImage);
+
+    // // Todo call method processImage(inputImage); FROM yohei
     // PoseDetectionScreen();
     // final poses = null;
     if (inputImage.metadata?.size != null &&
