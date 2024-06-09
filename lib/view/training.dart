@@ -127,8 +127,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       final painter = PosePainter(
         poses,
         inputImage.metadata!.size,
-        inputImage.metadata!.rotation,
-        _cameraLensDirection,
+        // inputImage.metadata!.rotation,
+        // _cameraLensDirection,
       );
       _customPaint = CustomPaint(painter: painter);
     } else {
