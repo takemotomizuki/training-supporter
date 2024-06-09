@@ -85,44 +85,12 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   CustomPaint? _customPaint;
   String? _text;
   late DetectorViewMode _mode;
-  // final cameras = await availableCameras();
-  // late final cameras = availableCameras();
-  // late CameraDescription get camera => cameras[0];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // _initialize();
-  //   // final camera = cameras.firstOrNull;
-
-  //   // _controller = CameraController(
-  //   //   // カメラを指定
-  //   //   // 解像度を定義
-  //   //   camera!,
-  //   //   ResolutionPreset.medium,
-  //   // );
-
-  //   // コントローラーを初期化
-  //   // _initializeControllerFuture = _controller.initialize();
-  // }
   @override
   void initState() {
     _mode = widget.initialDetectionMode;
     super.initState();
 
   }
-
-  // void _initialize() async {
-  //   if (cameras.isEmpty) {
-  //     cameras = await availableCameras();
-  //   }
-  //   for (var i = 0; i < cameras.length; i++) {
-  //     if (cameras[i].lensDirection == initialCameraLensDirection) {
-  //       cameraIndex = i;
-  //       break;
-  //     }
-  //   }
-  // }
 
   @override
   void dispose() async {
