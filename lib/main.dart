@@ -1,5 +1,6 @@
 import 'package:app/component/footer.dart';
 import 'package:app/view/training.dart';
+import 'package:app/view/training_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
@@ -125,7 +126,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     // MaterialPageRoute(builder: (context) => Training(title: 'どうも',)),
                     MaterialPageRoute(
                         builder: (context) =>
-                            TakePictureScreen(title: 'Pose_Detector')),
+                            TrainingMenu(title: 'Training Menu')),
+                    // TakePictureScreen(title: 'Pose_Detector')),
                   );
                 },
                 child: Text('カメラ起動')),
