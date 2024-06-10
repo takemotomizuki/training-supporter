@@ -13,6 +13,7 @@ import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 // import 'painters/pose_painter.dart';
 import 'pose_detection_screen.dart';
 import 'pose_painter.dart';
+import 'dart:ui' as ui;
 
 class Training extends StatefulWidget {
   const Training({super.key, required this.title});
@@ -122,13 +123,9 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     // PoseDetectionScreen();
     // final poses = null;
     if (inputImage.metadata?.size != null &&
-        inputImage.metadata?.rotation != null) {
-      final painter = PosePainter(
-        poses,
-        inputImage.metadata!.size,
-        // inputImage.metadata!.rotation,
-        // _cameraLensDirection,
-      );
+        inputImage.metadata?.rotation != null ) {
+
+      final painter = LankmarkPainter(pose: poses.first);
       _customPaint = CustomPaint(painter: painter);
     } else {
       _text = 'Poses found: ${poses.length}\n\n';

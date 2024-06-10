@@ -10,7 +10,6 @@ class PoseDetect {
       final options = PoseDetectorOptions();
       final poseDetector = PoseDetector(options: options);
       final List<Pose> poses = await poseDetector.processImage(inputImage);
-      print(poses.length);
       for (Pose pose in poses) {
         // to access all landmarks
         pose.landmarks.forEach((_, landmark) {
