@@ -65,7 +65,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   num count = 0;
   bool isCurled = false;
-  num threshHold = 100;
+  num threshHold = 10;
   num initDiff = -1;
 
   int cameraIndex = -1;
@@ -121,20 +121,21 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null ) {
 
-      // num diff =
-      //     poses.first[PoseLandmarkType.rightHip].y - poses.first[PoseLandmarkType.rightKnee].y;
-      //
-      // if(initDiff < diff.abs()) {
-      //   initDiff = diff.abs();
-      // }
-      //
-      // if(isCurled == false && diff.abs() < threshHold ) {
-      //   isCurled = true;
-      // } else if(isCurled == true && diff.abs() > (initDiff-threshHold).abs()){
-      //   count++;
-      //   isCurled = false;
-      //   print(count);
-      // }
+      num diff = poses.first.landmarks[PoseLandmarkType.rightHip]!.y
+          - poses.first.landmarks[PoseLandmarkType.rightKnee]!.y;
+      diff = diff.abs();
+
+      if(initDiff < diff){
+        initDiff = diff;
+      }
+      if(isCurled == false && diff < threshHold) {
+        isCurled = true;
+      } else if(isCurled == true && diff < (initDiff - threshHold).abs()) {
+        count++;
+        isCurled = false;
+      }
+      print(count);
+
       final painter = LankmarkPainter(pose: poses.first);
       _customPaint = CustomPaint(painter: painter);
     } else {
