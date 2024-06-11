@@ -1,4 +1,3 @@
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 
@@ -149,7 +148,9 @@ class LankmarkPainter extends CustomPainter {
       final p1 = Offset(
           resizeWidth(pose.landmarks[landmark1]!.x),
           resizeHeight(pose.landmarks[landmark1]!.y));
-      final p2 = Offset(pose.landmarks[landmark2]!.x, pose.landmarks[landmark2]!.y);
+      final p2 = Offset(
+          resizeWidth(pose.landmarks[landmark2]!.x),
+          resizeHeight(pose.landmarks[landmark2]!.y));
       canvas.drawCircle(p1, strokeWidth, paint);
       if (index < rightLegLandmarks.length - 1) {
         canvas.drawLine(p1, p2, paint);
