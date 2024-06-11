@@ -1,19 +1,10 @@
 import 'package:app/view/camera_view.dart';
-import 'package:app/view/pose_detector.dart';
+import 'package:app/pose_detection/pose_detector.dart';
 import 'package:flutter/material.dart';
 
-// for posedetecter
-import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
-// import 'detector_view.dart';
-// import 'painters/pose_painter.dart';
-import 'pose_detection_screen.dart';
-import 'pose_painter.dart';
-import 'dart:ui' as ui;
+import '../pose_detection/pose_painter.dart';
 
 class Training extends StatefulWidget {
   const Training({super.key, required this.title});
@@ -72,6 +63,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   final initialCameraLensDirection = CameraLensDirection.back;
   var _cameraLensDirection = CameraLensDirection.back;
 
+  num count = 0;
+  bool isCurled = false;
+  num threshHold = 100;
+  num initDiff = -1;
+
   int cameraIndex = -1;
   double _currentZoomLevel = 1.0;
   double _minAvailableZoom = 1.0;
@@ -125,6 +121,20 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null ) {
 
+      // num diff =
+      //     poses.first[PoseLandmarkType.rightHip].y - poses.first[PoseLandmarkType.rightKnee].y;
+      //
+      // if(initDiff < diff.abs()) {
+      //   initDiff = diff.abs();
+      // }
+      //
+      // if(isCurled == false && diff.abs() < threshHold ) {
+      //   isCurled = true;
+      // } else if(isCurled == true && diff.abs() > (initDiff-threshHold).abs()){
+      //   count++;
+      //   isCurled = false;
+      //   print(count);
+      // }
       final painter = LankmarkPainter(pose: poses.first);
       _customPaint = CustomPaint(painter: painter);
     } else {

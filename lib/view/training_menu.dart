@@ -1,18 +1,6 @@
 import 'package:app/view/training.dart';
 import 'package:flutter/material.dart';
 
-// for posedetecter
-import 'dart:io';
-import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
-// import 'detector_view.dart';
-// import 'painters/pose_painter.dart';
-import 'pose_detection_screen.dart';
-import 'pose_painter.dart';
-
 class TrainingMenu extends StatefulWidget {
   const TrainingMenu({super.key, required this.title});
 

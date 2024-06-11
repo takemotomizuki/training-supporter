@@ -14,6 +14,7 @@ class _Footer extends State {
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
+
           label: 'Home',
         ),
         BottomNavigationBarItem(
