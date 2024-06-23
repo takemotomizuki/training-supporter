@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'home.dart';
+import 'package:app/dataaccess/authentication_user.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -11,6 +11,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isObscure = true;
+  String email = "";
+  String password = "";
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,11 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: const InputDecoration(
                     labelText: 'ユーザー名を入力してください',
                   ),
+                  onChanged: (String value) {
+                    setState(() {
+                      email = value;
+                    });
+                  },
                 ),
               ),
               Padding(
@@ -48,14 +55,24 @@ class _LoginPageState extends State<LoginPage> {
                               _isObscure = !_isObscure;
                             });
                           })),
+                  onChanged: (String value) {
+                    setState(() {
+                      password= value;
+                    });
+                  },
                 ),
               ),
               Center(
                 child: ElevatedButton(
-                    onPressed: (){
+                    onPressed: () async {
+                      final loginSuccess = await AuthenticationUser.authenticate(email, password);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Home()),
+
+                        //ログインできたかどうかで遷移先を選択
+                        loginSuccess == true ?
+                        MaterialPageRoute(builder: (context) => Home()):
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     },
                     child: Text('ログイン')
