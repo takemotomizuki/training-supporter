@@ -1,3 +1,4 @@
+import 'package:app/pose_detection/pose_classifier_processor.dart';
 import 'package:app/view/camera_view.dart';
 import 'package:app/pose_detection/pose_detector.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   static List<CameraDescription> cameras = [];
   final initialCameraLensDirection = CameraLensDirection.back;
   var _cameraLensDirection = CameraLensDirection.back;
+  final poseClassifierProcessor = PoseClassifierProcessor(isStreamMode: false);
 
   num count = 0;
   bool isCurled = false;
@@ -120,21 +122,22 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     // final poses = null;
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null ) {
-
-      num diff = poses.first.landmarks[PoseLandmarkType.rightHip]!.y
-          - poses.first.landmarks[PoseLandmarkType.rightKnee]!.y;
-      diff = diff.abs();
-
-      if(initDiff < diff){
-        initDiff = diff;
-      }
-      if(isCurled == false && diff < threshHold) {
-        isCurled = true;
-      } else if(isCurled == true && diff < (initDiff - threshHold).abs()) {
-        count++;
-        isCurled = false;
-      }
-      print(count);
+      final classificationResult = poseClassifierProcessor.getPoseResult(poses.first);
+      print(classificationResult);
+      // num diff = poses.first.landmarks[PoseLandmarkType.rightHip]!.y
+      //     - poses.first.landmarks[PoseLandmarkType.rightKnee]!.y;
+      // diff = diff.abs();
+      //
+      // if(initDiff < diff){
+      //   initDiff = diff;
+      // }
+      // if(isCurled == false && diff < threshHold) {
+      //   isCurled = true;
+      // } else if(isCurled == true && diff < (initDiff - threshHold).abs()) {
+      //   count++;
+      //   isCurled = false;
+      // }
+      // print(count);
 
       final painter = LankmarkPainter(pose: poses.first);
       _customPaint = CustomPaint(painter: painter);
