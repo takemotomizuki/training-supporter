@@ -63,7 +63,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   static List<CameraDescription> cameras = [];
   final initialCameraLensDirection = CameraLensDirection.back;
   var _cameraLensDirection = CameraLensDirection.back;
-  final poseClassifierProcessor = PoseClassifierProcessor(isStreamMode: false);
+  final poseClassifierProcessor = PoseClassifierProcessor(isStreamMode: true);
 
   num count = 0;
   bool isCurled = false;
@@ -121,23 +121,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     // PoseDetectionScreen();
     // final poses = null;
     if (inputImage.metadata?.size != null &&
-        inputImage.metadata?.rotation != null ) {
-      final classificationResult = poseClassifierProcessor.getPoseResult(poses.first);
-      print(classificationResult);
-      // num diff = poses.first.landmarks[PoseLandmarkType.rightHip]!.y
-      //     - poses.first.landmarks[PoseLandmarkType.rightKnee]!.y;
-      // diff = diff.abs();
-      //
-      // if(initDiff < diff){
-      //   initDiff = diff;
-      // }
-      // if(isCurled == false && diff < threshHold) {
-      //   isCurled = true;
-      // } else if(isCurled == true && diff < (initDiff - threshHold).abs()) {
-      //   count++;
-      //   isCurled = false;
-      // }
-      // print(count);
+        inputImage.metadata?.rotation != null &&
+        poses != null ) {
+      final classificationResult = await poseClassifierProcessor.getPoseResult(poses.first);
+      print(poseClassifierProcessor.repCounters!.last.numRepeats);
 
       final painter = LankmarkPainter(pose: poses.first);
       _customPaint = CustomPaint(painter: painter);

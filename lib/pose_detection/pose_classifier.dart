@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 import 'package:app/pose_detection/classification_result.dart';
 import 'package:app/pose_detection/point_3d.dart';
@@ -56,7 +55,9 @@ class PoseClassifier {
 
       double originalMax = 0;
       double flippedMax = 0;
-      for (int i = 0; i < embedding.length; i++) {
+
+      int size = min(embedding.length, sampleEmbedding.length);
+      for (int i = 0; i < size; i++) {
         originalMax = max(originalMax,
             (embedding[i].subtract(sampleEmbedding[i]).multiply(axesWeights)).maxAbs());
         flippedMax = max(flippedMax,
@@ -78,7 +79,8 @@ class PoseClassifier {
 
       double originalSum = 0;
       double flippedSum = 0;
-      for (int i = 0; i < embedding.length; i++) {
+      int size = min(embedding.length, sampleEmbedding.length);
+      for (int i = 0; i < size; i++) {
         originalSum += (embedding[i].subtract(sampleEmbedding[i]).multiply(axesWeights)).sumAbs();
         flippedSum += (flippedEmbedding[i].subtract(sampleEmbedding[i]).multiply(axesWeights)).sumAbs();
       }
