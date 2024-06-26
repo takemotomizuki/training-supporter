@@ -123,10 +123,12 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null &&
         poses != null ) {
-      final classificationResult = await poseClassifierProcessor.getPoseResult(poses.first);
-      print(poseClassifierProcessor.repCounters!.last.numRepeats);
+      await poseClassifierProcessor.getPoseResult(poses.first);
 
-      final painter = LankmarkPainter(pose: poses.first);
+      final painter = LankmarkPainter(
+          pose: poses.first,
+          count: poseClassifierProcessor.repCounters!.last.numRepeats
+      );
       _customPaint = CustomPaint(painter: painter);
     } else {
       _text = 'Poses found: ${poses.length}\n\n';
