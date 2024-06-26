@@ -69,6 +69,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   bool isCurled = false;
   num threshHold = 10;
   num initDiff = -1;
+  String trainingType = "squats";
 
   int cameraIndex = -1;
   double _currentZoomLevel = 1.0;
@@ -122,12 +123,16 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     // final poses = null;
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null &&
-        poses != null ) {
-      await poseClassifierProcessor.getPoseResult(poses.first);
+        poses.length != 0 ) {
+      final poseResult = await poseClassifierProcessor.getPoseResult(poses.first);
+      if(poseResult.first.contains(trainingType)){
+        String rep = poseResult.first.split(':').elementAt(1);
+        count = int.parse(rep.split("reps").first);
+      }
 
       final painter = LankmarkPainter(
           pose: poses.first,
-          count: poseClassifierProcessor.repCounters!.last.numRepeats
+          count: count,
       );
       _customPaint = CustomPaint(painter: painter);
     } else {
