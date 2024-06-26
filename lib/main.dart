@@ -1,4 +1,3 @@
-import 'package:app/pose_detection/pose_classifier_processor.dart';
 import 'package:app/view/home.dart';
 import 'package:app/view/training_menu.dart';
 import 'package:flutter/material.dart';
