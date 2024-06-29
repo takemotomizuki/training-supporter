@@ -12,6 +12,7 @@ class RepetitionCounter {
 
   int numRepeats;
   bool poseEntered;
+  DateTime startTime = DateTime.now();
 
   RepetitionCounter(this.className,
       {this.enterThreshold = DEFAULT_ENTER_THRESHOLD, this.exitThreshold = DEFAULT_EXIT_THRESHOLD})
@@ -25,14 +26,16 @@ class RepetitionCounter {
   int addClassificationResult(ClassificationResult classificationResult) {
     double poseConfidence = classificationResult.getClassConfidence(className);
 
-    if (!poseEntered) {
+    if (!poseEntered && startTime.difference(DateTime.now()).inSeconds > 1) {
       poseEntered = poseConfidence > enterThreshold;
+      startTime = DateTime.now();
       return numRepeats;
     }
 
-    if (poseConfidence < exitThreshold) {
+    if (poseConfidence < exitThreshold  && startTime.difference(DateTime.now()).inSeconds > 1) {
       numRepeats++;
       poseEntered = false;
+      startTime = DateTime.now();
     }
 
     return numRepeats;

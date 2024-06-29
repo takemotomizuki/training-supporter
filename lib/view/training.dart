@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:camera/camera.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
-import '../pose_detection/pose_painter.dart';
+import '../painter/pose_painter.dart';
 
 class Training extends StatefulWidget {
   const Training({super.key, required this.title});
@@ -43,33 +43,37 @@ class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({
     super.key,
     required this.title,
+    required this.trainingKeyWord,
     this.onDetectorViewModeChanged,
     this.initialDetectionMode = DetectorViewMode.liveFeed,
     this.onCameraFeedReady,
   });
 
   final String title;
+  final String trainingKeyWord;
   final DetectorViewMode initialDetectionMode;
   final Function(DetectorViewMode mode)? onDetectorViewModeChanged;
   final Function()? onCameraFeedReady;
 
   @override
-  TakePictureScreenState createState() => TakePictureScreenState();
+  TakePictureScreenState createState() => TakePictureScreenState(trainingKeyWord: trainingKeyWord);
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
+  TakePictureScreenState({
+    required this.trainingKeyWord,
+  });
+  final String trainingKeyWord;
   // late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   static List<CameraDescription> cameras = [];
   final initialCameraLensDirection = CameraLensDirection.back;
   var _cameraLensDirection = CameraLensDirection.back;
   final poseClassifierProcessor = PoseClassifierProcessor(isStreamMode: true);
-
   num count = 0;
   bool isCurled = false;
   num threshHold = 10;
   num initDiff = -1;
-  String trainingType = "squats";
 
   int cameraIndex = -1;
   double _currentZoomLevel = 1.0;
@@ -125,7 +129,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         inputImage.metadata?.rotation != null &&
         poses.length != 0 ) {
       final poseResult = await poseClassifierProcessor.getPoseResult(poses.first);
-      if(poseResult.first.contains(trainingType)){
+      print(poseResult.first);
+      if(poseResult.first.contains(trainingKeyWord)){
         String rep = poseResult.first.split(':').elementAt(1);
         count = int.parse(rep.split("reps").first);
       }
