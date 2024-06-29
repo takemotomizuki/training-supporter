@@ -5,9 +5,11 @@ class LankmarkPainter extends CustomPainter {
   LankmarkPainter({
     //required this.image,
     required this.pose,
+    required this.count,
   });
   //final ui.Image image; // MK kitへの入力画像
   final Pose pose; // ML kitの出力
+  final num count;
 
   // (1) ランドマークを分類
   List<PoseLandmarkType> get faceLandmarks => [
@@ -174,6 +176,24 @@ class LankmarkPainter extends CustomPainter {
         canvas.drawLine(p1, p2, paint);
       }
     }
+
+    // トレーニングの回数を表示
+    final span = TextSpan(
+      style: TextStyle(
+        color: Colors.white,
+        backgroundColor: Colors.orange,
+        fontSize: 80,
+        fontWeight: FontWeight.bold,
+      ),
+      text: count.toString(),
+    );
+    final textPainter = TextPainter(
+      text: span,
+      textAlign: TextAlign.left,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    textPainter.paint(canvas, const Offset(10, 10));
   }
 
   @override

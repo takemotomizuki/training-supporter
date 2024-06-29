@@ -1,3 +1,4 @@
+import 'package:app/pose_detection/pose_classifier_processor.dart';
 import 'package:app/view/camera_view.dart';
 import 'package:app/pose_detection/pose_detector.dart';
 import 'package:flutter/material.dart';
@@ -62,11 +63,13 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   static List<CameraDescription> cameras = [];
   final initialCameraLensDirection = CameraLensDirection.back;
   var _cameraLensDirection = CameraLensDirection.back;
+  final poseClassifierProcessor = PoseClassifierProcessor(isStreamMode: true);
 
   num count = 0;
   bool isCurled = false;
   num threshHold = 10;
   num initDiff = -1;
+  String trainingType = "squats";
 
   int cameraIndex = -1;
   double _currentZoomLevel = 1.0;
@@ -119,24 +122,18 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     // PoseDetectionScreen();
     // final poses = null;
     if (inputImage.metadata?.size != null &&
-        inputImage.metadata?.rotation != null ) {
-
-      num diff = poses.first.landmarks[PoseLandmarkType.rightHip]!.y
-          - poses.first.landmarks[PoseLandmarkType.rightKnee]!.y;
-      diff = diff.abs();
-
-      if(initDiff < diff){
-        initDiff = diff;
+        inputImage.metadata?.rotation != null &&
+        poses.length != 0 ) {
+      final poseResult = await poseClassifierProcessor.getPoseResult(poses.first);
+      if(poseResult.first.contains(trainingType)){
+        String rep = poseResult.first.split(':').elementAt(1);
+        count = int.parse(rep.split("reps").first);
       }
-      if(isCurled == false && diff < threshHold) {
-        isCurled = true;
-      } else if(isCurled == true && diff < (initDiff - threshHold).abs()) {
-        count++;
-        isCurled = false;
-      }
-      print(count);
 
-      final painter = LankmarkPainter(pose: poses.first);
+      final painter = LankmarkPainter(
+          pose: poses.first,
+          count: count,
+      );
       _customPaint = CustomPaint(painter: painter);
     } else {
       _text = 'Poses found: ${poses.length}\n\n';
