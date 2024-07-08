@@ -18,13 +18,14 @@ class PoseClassifierProcessor {
   static const List<String> POSE_CLASSES = [PUSHUPS_CLASS, SQUATS_CLASS];
 
   final bool isStreamMode;
+  final String trainingKeyword;
 
   EMASmoothing? emaSmoothing;
   List<RepetitionCounter>? repCounters;
   PoseClassifier? poseClassifier;
   String lastRepResult = '';
 
-  PoseClassifierProcessor({required this.isStreamMode}) {
+  PoseClassifierProcessor({required this.isStreamMode, required this.trainingKeyword}) {
     if (isStreamMode) {
       emaSmoothing = EMASmoothing();
       repCounters = [];
@@ -68,6 +69,9 @@ class PoseClassifierProcessor {
       }
 
       for (RepetitionCounter repCounter in repCounters!) {
+        if(!repCounter.className.contains(trainingKeyword)) {
+          continue;
+        }
         int repsBefore = repCounter.numRepeats;
         int repsAfter = repCounter.addClassificationResult(classification);
         if (repsAfter > repsBefore) {

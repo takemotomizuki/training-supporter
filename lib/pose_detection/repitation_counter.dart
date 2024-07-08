@@ -12,12 +12,13 @@ class RepetitionCounter {
 
   int numRepeats;
   bool poseEntered;
+  bool poseDowned;
   DateTime startTime = DateTime.now();
 
   RepetitionCounter(this.className,
       {this.enterThreshold = DEFAULT_ENTER_THRESHOLD, this.exitThreshold = DEFAULT_EXIT_THRESHOLD})
       : numRepeats = 0,
-        poseEntered = false;
+        poseEntered = false, poseDowned = false;
 
   /// Adds a new Pose classification result and updates reps for given class.
   ///
@@ -26,17 +27,49 @@ class RepetitionCounter {
   int addClassificationResult(ClassificationResult classificationResult) {
     double poseConfidence = classificationResult.getClassConfidence(className);
 
-    if (!poseEntered && startTime.difference(DateTime.now()).inSeconds > 1) {
+    if (!poseEntered) {
       poseEntered = poseConfidence > enterThreshold;
-      startTime = DateTime.now();
       return numRepeats;
     }
 
-    if (poseConfidence < exitThreshold  && startTime.difference(DateTime.now()).inSeconds > 1) {
+    if (poseConfidence < exitThreshold) {
       numRepeats++;
       poseEntered = false;
-      startTime = DateTime.now();
     }
+
+    // if (!poseEntered && startTime.difference(DateTime.now()).inSeconds > 1) {
+    //   poseEntered = poseConfidence > enterThreshold;
+    //   startTime = DateTime.now();
+    //   return numRepeats;
+    // }
+    //
+    // if (poseConfidence < exitThreshold  && startTime.difference(DateTime.now()).inSeconds > 1) {
+    //   numRepeats++;
+    //   poseEntered = false;
+    //   startTime = DateTime.now();
+    // }
+
+    // if (!poseEntered) {
+    //   poseEntered = poseConfidence > enterThreshold;
+    //   startTime = DateTime.now();
+    //   return numRepeats;
+    // }
+    //
+    // if (poseEntered && !poseDowned && poseConfidence < exitThreshold) {
+    //   if(DateTime.now().difference(startTime).inMilliseconds > 300) {
+    //     poseDowned = true;
+    //   }
+    //   startTime = DateTime.now();
+    // }
+    //
+    // if(poseEntered && poseDowned && poseConfidence > enterThreshold) {
+    //   if(DateTime.now().difference(startTime).inMilliseconds > 300) {
+    //     numRepeats++;
+    //   }
+    //   startTime = DateTime.now();
+    //   poseEntered = false;
+    //   poseDowned = false;
+    // }
 
     return numRepeats;
   }

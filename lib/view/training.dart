@@ -56,20 +56,15 @@ class TakePictureScreen extends StatefulWidget {
   final Function()? onCameraFeedReady;
 
   @override
-  TakePictureScreenState createState() => TakePictureScreenState(trainingKeyWord: trainingKeyWord);
+  TakePictureScreenState createState() => TakePictureScreenState();
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
-  TakePictureScreenState({
-    required this.trainingKeyWord,
-  });
-  final String trainingKeyWord;
   // late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   static List<CameraDescription> cameras = [];
   final initialCameraLensDirection = CameraLensDirection.back;
   var _cameraLensDirection = CameraLensDirection.back;
-  final poseClassifierProcessor = PoseClassifierProcessor(isStreamMode: true);
   num count = 0;
   bool isCurled = false;
   num threshHold = 10;
@@ -105,6 +100,47 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final poseClassifierProcessor = PoseClassifierProcessor(
+      isStreamMode: true,
+      trainingKeyword: widget.trainingKeyWord,
+    );
+
+    Future<void> _processImage(InputImage inputImage) async {
+      _isBusy = true;
+      setState(() {
+        _text = '';
+      });
+      final poses = await PoseDetect.detect(inputImage);
+
+      // // Todo call method processImage(inputImage); FROM yohei
+      // PoseDetectionScreen();
+      // final poses = null;
+      if (inputImage.metadata?.size != null &&
+          inputImage.metadata?.rotation != null &&
+          poses.length != 0 ) {
+        final poseResult = await poseClassifierProcessor.getPoseResult(poses.first);
+        print(poseResult.first);
+        if(poseResult.first.contains(widget.trainingKeyWord)){
+          String rep = poseResult.first.split(':').elementAt(1);
+          count = int.parse(rep.split("reps").first);
+        }
+
+        final painter = LankmarkPainter(
+          pose: poses.first,
+          count: count,
+        );
+        _customPaint = CustomPaint(painter: painter);
+      } else {
+        _text = 'Poses found: ${poses.length}\n\n';
+        // TODO: set _customPaint to draw landmarks on top of image
+        _customPaint = null;
+      }
+      _isBusy = false;
+      if (mounted) {
+        setState(() {});
+      }
+    }
+
     return CameraView(
       customPaint: _customPaint,
       onImage: _processImage,
@@ -113,42 +149,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       initialCameraLensDirection: _cameraLensDirection,
       onCameraLensDirectionChanged: (value) => _cameraLensDirection = value,
     );
-  }
-
-  Future<void> _processImage(InputImage inputImage) async {
-    _isBusy = true;
-    setState(() {
-      _text = '';
-    });
-    final poses = await PoseDetect.detect(inputImage);
-
-    // // Todo call method processImage(inputImage); FROM yohei
-    // PoseDetectionScreen();
-    // final poses = null;
-    if (inputImage.metadata?.size != null &&
-        inputImage.metadata?.rotation != null &&
-        poses.length != 0 ) {
-      final poseResult = await poseClassifierProcessor.getPoseResult(poses.first);
-      print(poseResult.first);
-      if(poseResult.first.contains(trainingKeyWord)){
-        String rep = poseResult.first.split(':').elementAt(1);
-        count = int.parse(rep.split("reps").first);
-      }
-
-      final painter = LankmarkPainter(
-          pose: poses.first,
-          count: count,
-      );
-      _customPaint = CustomPaint(painter: painter);
-    } else {
-      _text = 'Poses found: ${poses.length}\n\n';
-      // TODO: set _customPaint to draw landmarks on top of image
-      _customPaint = null;
-    }
-    _isBusy = false;
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   void _onDetectorViewModeChanged() {
