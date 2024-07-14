@@ -2,7 +2,6 @@ import 'package:app/view/home.dart';
 import 'package:app/view/training_menu.dart';
 import 'package:flutter/material.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -57,7 +56,9 @@ class _NavigationExampleState extends State<NavigationExample> {
       ),
       // 遷移先の画面登録
       body: <Widget>[
-        Home(),
+        Home(
+          userId: '1',
+        ),
         TrainingMenu(title: "Training Menu"),
       ][currentPageIndex],
     );
