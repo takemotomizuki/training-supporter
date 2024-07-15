@@ -25,8 +25,6 @@ class TrainingMenuState extends State<TrainingMenu> {
     final snapshot =
         await FirebaseFirestore.instance.collection('TrainingMenu').get();
     menus = snapshot.docs;
-    print("helllllllllll");
-    print(menus.length);
   }
 
   @override
@@ -58,8 +56,8 @@ class TrainingMenuState extends State<TrainingMenu> {
                               context,
                               // MaterialPageRoute(builder: (context) => Training(title: 'どうも',)),
                               MaterialPageRoute(
-                                  builder: (context) => const TakePictureScreen(
-                                      title: 'Pose Detector')),
+                                  builder: (context) => TakePictureScreen(
+                                      title: 'Pose Detector', trainingKeyWord: menu['keyword'],)),
                               // builder: (context) => Firestor()),
                             );
                           },
@@ -102,100 +100,6 @@ class TrainingMenuState extends State<TrainingMenu> {
                     );
                   }).toList(),
                 ),
-                // children: <Widget>[
-                //   Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       GestureDetector(
-                //         onTap: () {
-                //           Navigator.push(
-                //             context,
-                //             // MaterialPageRoute(builder: (context) => Training(title: 'どうも',)),
-                //             MaterialPageRoute(
-                //                 // builder: (context) =>
-                //                 //     TakePictureScreen(title: 'Pose Detector')),
-                //                 builder: (context) => Firestore()),
-                //           );
-                //         },
-                //         child: Container(
-                //           margin: const EdgeInsets.all(5),
-                //           height: min(height, size.height),
-                //           width: size.width,
-                //           decoration: BoxDecoration(
-                //             color: Colors.orangeAccent,
-                //             borderRadius: BorderRadius.circular(10),
-                //           ),
-                //           alignment: Alignment.center,
-                //           child: Row(
-                //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //             children: <Widget>[
-                //               const SizedBox(
-                //                 height: 100,
-                //                 width: 120,
-                //                 child: Center(
-                //                   child: Text(
-                //                     "Squat\n30回",
-                //                     style: TextStyle(
-                //                         fontSize: 24, fontWeight: FontWeight.bold),
-                //                   ),
-                //                 ),
-                //               ),
-                //               SizedBox(
-                //                 height: 100,
-                //                 width: 100,
-                //                 child: Image.asset('images/model1.jpg'),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                //   Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       GestureDetector(
-                //         onTap: () {
-                //           MaterialPageRoute(
-                //               builder: (context) =>
-                //                   TakePictureScreen(title: 'Pose_Detector'));
-                //         },
-                //         child: Container(
-                //           margin: const EdgeInsets.all(5),
-                //           height: 110,
-                //           width: 300,
-                //           decoration: BoxDecoration(
-                //             color: Colors.orangeAccent,
-                //             borderRadius: BorderRadius.circular(10),
-                //           ),
-                //           alignment: Alignment.center,
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                //   Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       GestureDetector(
-                //         onTap: () {
-                //           MaterialPageRoute(
-                //               builder: (context) =>
-                //                   TakePictureScreen(title: 'Pose_Detector'));
-                //         },
-                //         child: Container(
-                //           margin: const EdgeInsets.all(5),
-                //           height: 110,
-                //           width: 300,
-                //           decoration: BoxDecoration(
-                //             color: Colors.orangeAccent,
-                //             borderRadius: BorderRadius.circular(10),
-                //           ),
-                //           alignment: Alignment.center,
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ],
               ),
             );
           }
@@ -203,64 +107,4 @@ class TrainingMenuState extends State<TrainingMenu> {
       ),
     );
   }
-
-//   Future<Column> getDatabase() async {
-//     List<DocumentSnapshot> documentList = [];
-//     // final Size size = MediaQuery.of(context).size;
-//     const double height = 110;
-//     // コレクション内のドキュメント一覧を表示
-//     return Column(
-//       children: documentList.map((document) {
-//         return Row(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             GestureDetector(
-//               onTap: () {
-//                 Navigator.push(
-//                   context,
-//                   // MaterialPageRoute(builder: (context) => Training(title: 'どうも',)),
-//                   MaterialPageRoute(
-//                       // builder: (context) =>
-//                       //     TakePictureScreen(title: 'Pose Detector')),
-//                       builder: (context) => Firestore()),
-//                 );
-//               },
-//               child: Container(
-//                 margin: const EdgeInsets.all(5),
-//                 height: min(height, size.height),
-//                 width: size.width,
-//                 decoration: BoxDecoration(
-//                   color: Colors.orangeAccent,
-//                   borderRadius: BorderRadius.circular(10),
-//                 ),
-//                 alignment: Alignment.center,
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: <Widget>[
-//                     SizedBox(
-//                       height: 100,
-//                       width: 120,
-//                       child: Center(
-//                         child: Text(
-//                           // name,
-//                           '${document['times']} \n ${document['times']}',
-//                           style: const TextStyle(
-//                               fontSize: 24, fontWeight: FontWeight.bold),
-//                         ),
-//                       ),
-//                     ),
-//                     SizedBox(
-//                       height: 100,
-//                       width: 100,
-//                       child: Image.asset('images/model1.jpg'),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ],
-//         );
-//       }).toList(),
-//     );
-//   }
 }
