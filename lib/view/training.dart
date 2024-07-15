@@ -1,3 +1,4 @@
+import 'package:app/painter/count_painter.dart';
 import 'package:app/pose_detection/pose_classifier_processor.dart';
 import 'package:app/view/camera_view.dart';
 import 'package:app/pose_detection/pose_detector.dart';
@@ -6,28 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import '../painter/pose_painter.dart';
-
-class Training extends StatefulWidget {
-  const Training({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<Training> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<Training> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(),
-    );
-  }
-}
 
 // tezi 0602
 /// 写真撮影画面
@@ -40,20 +19,29 @@ class TakePictureScreen extends StatefulWidget {
 //   @override
 //   State<TakePictureScreen> createState() => TakePictureScreenState();
 // }
-  const TakePictureScreen({
+  TakePictureScreen({
     super.key,
     required this.title,
     required this.trainingKeyWord,
     this.onDetectorViewModeChanged,
     this.initialDetectionMode = DetectorViewMode.liveFeed,
     this.onCameraFeedReady,
-  });
+  }) {
+    if(_poseClassifierProcessor == null) {
+      _poseClassifierProcessor = PoseClassifierProcessor(
+        isStreamMode: true,
+        trainingKeyword: trainingKeyWord,
+      );
+    }
+  }
 
   final String title;
   final String trainingKeyWord;
   final DetectorViewMode initialDetectionMode;
   final Function(DetectorViewMode mode)? onDetectorViewModeChanged;
   final Function()? onCameraFeedReady;
+
+  static var _poseClassifierProcessor;
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -66,6 +54,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   final initialCameraLensDirection = CameraLensDirection.back;
   var _cameraLensDirection = CameraLensDirection.back;
   num count = 0;
+  bool poseEntered = false;
+  bool poseDowned = false;
   bool isCurled = false;
   num threshHold = 10;
   num initDiff = -1;
@@ -100,11 +90,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final poseClassifierProcessor = PoseClassifierProcessor(
-      isStreamMode: true,
-      trainingKeyword: widget.trainingKeyWord,
-    );
-
     Future<void> _processImage(InputImage inputImage) async {
       _isBusy = true;
       setState(() {
@@ -112,28 +97,30 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       });
       final poses = await PoseDetect.detect(inputImage);
 
+        final countPainter = CountPainter(count: count, poseEntered: poseEntered, poseDowned: poseDowned);
+        _customPaint = CustomPaint(painter: countPainter);
+
       // // Todo call method processImage(inputImage); FROM yohei
       // PoseDetectionScreen();
       // final poses = null;
       if (inputImage.metadata?.size != null &&
           inputImage.metadata?.rotation != null &&
           poses.length != 0 ) {
-        final poseResult = await poseClassifierProcessor.getPoseResult(poses.first);
-        print(poseResult.first);
+        final poseResult = await TakePictureScreen._poseClassifierProcessor.getPoseResult(poses.first);
         if(poseResult.first.contains(widget.trainingKeyWord)){
-          String rep = poseResult.first.split(':').elementAt(1);
-          count = int.parse(rep.split("reps").first);
+          count = int.parse(poseResult.first.split(':').elementAt(1));
+          poseEntered = bool.parse(poseResult.first.split(':').elementAt(2));
+          poseDowned = bool.parse(poseResult.first.split(':').elementAt(3));
         }
 
-        final painter = LankmarkPainter(
-          pose: poses.first,
-          count: count,
-        );
-        _customPaint = CustomPaint(painter: painter);
+        // final painter = LankmarkPainter(
+        //   pose: poses.first,
+        // );
+        // _customPaint = CustomPaint(painter: painter);
       } else {
         _text = 'Poses found: ${poses.length}\n\n';
         // TODO: set _customPaint to draw landmarks on top of image
-        _customPaint = null;
+        // _customPaint = null;
       }
       _isBusy = false;
       if (mounted) {

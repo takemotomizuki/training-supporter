@@ -4,6 +4,7 @@ import 'package:app/pose_detection/ema_smootjing.dart';
 import 'package:app/pose_detection/pose_classifier.dart';
 import 'package:app/pose_detection/pose_sample.dart';
 import 'package:app/pose_detection/repitation_counter.dart';
+import 'package:app/pose_detection/reputation_result.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/foundation.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
@@ -25,7 +26,10 @@ class PoseClassifierProcessor {
   PoseClassifier? poseClassifier;
   String lastRepResult = '';
 
-  PoseClassifierProcessor({required this.isStreamMode, required this.trainingKeyword}) {
+  PoseClassifierProcessor({
+    required this.isStreamMode,
+    required this.trainingKeyword,
+  }) {
     if (isStreamMode) {
       emaSmoothing = EMASmoothing();
       repCounters = [];
@@ -73,13 +77,9 @@ class PoseClassifierProcessor {
           continue;
         }
         int repsBefore = repCounter.numRepeats;
-        int repsAfter = repCounter.addClassificationResult(classification);
-        if (repsAfter > repsBefore) {
-          // Play a fun beep when rep counter updates.
-          // Note: Flutter does not have a direct equivalent for ToneGenerator, so you would need to use a package like 'flutter_beep'
-          lastRepResult = "${repCounter.className} : $repsAfter reps";
-          break;
-        }
+        ReputationResult reputationResult = repCounter.addClassificationResult(classification);
+        int repsAfter = reputationResult.numRepeat;
+        lastRepResult = "${repCounter.className} : $repsAfter :${reputationResult.poseEntered}:${reputationResult.poseDowned}";
       }
       result.add(lastRepResult);
     }
