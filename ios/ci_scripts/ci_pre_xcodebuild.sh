@@ -1,1 +1,1 @@
-pod install
+flutter build ios
