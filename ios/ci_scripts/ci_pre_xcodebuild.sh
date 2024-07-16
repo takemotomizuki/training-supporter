@@ -1,50 +1,26 @@
-#!/bin/bash
-# Install flutter
-source ./bin/detectos.sh
+#!/bin/sh
 
-# ref. https://qiita.com/tomy0610/items/896dc8ec9ba95c33194f
-if [ ! "$OSDIST" = "macos" ]; then
-    echo "Not supported OS."
-    exit 1
-fi
-if ! type gem >/dev/null 2>&1; then
-    echo "Run ruby.sh first to install gem for CocoaPods"
-    exit 1
-fi
-if ! type flutter >/dev/null 2>&1; then
-    echo "Downloading flutter..."
-    cd
-    git clone https://github.com/flutter/flutter.git -b stable
-    export PATH="$PATH:$HOME/flutter/bin"
-    #    curl -L https://storage.googleapis.com/flutter_infra/releases/stable/macos/flutter_macos_1.22.6-stable.zip -o ~/flutter.zip
-    #   mkdir -p $DESTDIR
-    #    cd $DESTDIR
-    #    unzip ~/flutter.zip
-    #DESTDIR="$HOME/development"
-    #export PATH="$PATH:$DESTDIR/flutter/bin"
-    #rm ~/flutter.zip
-fi
+# Fail this script if any subcommand fails.
+set -e
 
-# ref https://flutter.dev/docs/get-started/install/macos
-echo "Installing Xcode ..."
-echo "If it does not work, download Command Line Tools first from: https://developer.apple.com/download/more/"
-sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-sudo xcodebuild -runFirstLaunch
+# The default execution directory of this script is the ci_scripts directory.
+cd $CI_PRIMARY_REPOSITORY_PATH # change working directory to the root of your cloned repo.
 
-echo "Installing CocoaPods for Xcode ..."
-# ref https://qiita.com/ShinokiRyosei/items/3090290cb72434852460
-sudo gem install cocoapods
-pod setup
+# Install Flutter using git.
+git clone https://github.com/flutter/flutter.git --depth 1 -b stable $HOME/flutter
+export PATH="$PATH:$HOME/flutter/bin"
 
-~/flutter/bin/flutter precache
+# Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
+flutter precache --ios
 
-# Change channel to beta is required, otherwise flutter doctor does not detect Android Studio plugin.
-# ref https://stackoverflow.com/questions/52336654/android-studio-flutter-and-dart-plugins-not-recognized-by-flutter-doctor-but-p
-flutter channel beta
+# Install Flutter dependencies.
+flutter pub get
 
-# ref https://stackoverflow.com/questions/61993738/flutter-doctor-android-licenses-gives-a-java-error
-echo "Also Install Android SDK Command-line tools from Android Studio."
+# Install CocoaPods using Homebrew.
+HOMEBREW_NO_AUTO_UPDATE=1 # disable homebrew's automatic updates.
+brew install cocoapods
 
-~/flutter/bin/flutter doctor
+# Install CocoaPods dependencies.
+cd ios && pod install # run `pod install` in the `ios` directory.
 
-flutter build ios
+exit 0
