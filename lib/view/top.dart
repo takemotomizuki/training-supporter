@@ -52,7 +52,7 @@ class _TopState extends State<Top> {
 
 
       body: <Widget>[
-        Home(),
+        Home(userId: "1",),
         TrainingMenu(title: "Training Menu"),
       ][currentPageIndex],
     );

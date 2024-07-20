@@ -1,9 +1,14 @@
 import 'package:app/view/home.dart';
+import 'package:app/view/login.dart';
+import 'package:app/view/top.dart';
 import 'package:app/view/training_menu.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -32,35 +37,9 @@ class _NavigationExampleState extends State<NavigationExample> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        indicatorColor: Colors.amber,
-        selectedIndex: currentPageIndex,
-        // 下部アイコンの登録
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Badge(child: Icon(Icons.local_fire_department)),
-            label: 'Training',
-          ),
-        ],
-      ),
-      // 遷移先の画面登録
-      body: <Widget>[
-        Home(
-          userId: '1',
-        ),
-        TrainingMenu(title: "Training Menu"),
-      ][currentPageIndex],
-    );
+    final currentUser = FirebaseAuth.instance.currentUser;
+    return currentUser == null ?
+      LoginPage(warningMessage: '',):
+      Top(userId: currentUser.email.toString(),);
   }
 }
