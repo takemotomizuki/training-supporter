@@ -2,7 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+
 class AuthenticationUser {
+
+  static int userId = -1;
+
+
 
   static Future<bool> authenticate(String email, String password) async {
 
