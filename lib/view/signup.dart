@@ -26,8 +26,8 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Training Supporter'),
-        backgroundColor: Colors.blue,
+        title: Text('アカウント作成'),
+        backgroundColor: Colors.amber,
       ),
       body: Center(
         child: Container(

@@ -33,8 +33,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Training Supporter'),
-        backgroundColor: Colors.blue,
+        title: Text('ログイン'),
+        backgroundColor: Colors.amber,
       ),
       body: Center(
         child: Container(
