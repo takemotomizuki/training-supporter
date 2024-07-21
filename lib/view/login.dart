@@ -28,7 +28,8 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'ユーザー名を入力してください',
@@ -41,7 +42,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
                   obscureText: _isObscure,
                   decoration: InputDecoration(
@@ -57,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                           })),
                   onChanged: (String value) {
                     setState(() {
-                      password= value;
+                      password = value;
                     });
                   },
                 ),
@@ -65,18 +67,21 @@ class _LoginPageState extends State<LoginPage> {
               Center(
                 child: ElevatedButton(
                     onPressed: () async {
-                      final loginSuccess = await AuthenticationUser.authenticate(email, password);
+                      final loginSuccess =
+                          await AuthenticationUser.authenticate(
+                              email, password);
                       Navigator.push(
                         context,
 
                         //ログインできたかどうかで遷移先を選択
-                        loginSuccess == true ?
-                        MaterialPageRoute(builder: (context) => Home()):
-                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        loginSuccess == true
+                            ? MaterialPageRoute(
+                                builder: (context) => Home(userId: "1"))
+                            : MaterialPageRoute(
+                                builder: (context) => LoginPage()),
                       );
                     },
-                    child: Text('ログイン')
-                ),
+                    child: Text('ログイン')),
               ),
             ],
           ),
