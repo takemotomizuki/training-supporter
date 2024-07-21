@@ -39,8 +39,12 @@ class _NavigationExampleState extends State<NavigationExample> {
     final ThemeData theme = Theme.of(context);
     final currentUser = FirebaseAuth.instance.currentUser;
     final currentUserId = currentUser?.uid;
-    return currentUser == null ?
-      LoginPage(warningMessage: '',):
-      Top(userId: currentUserId.toString(),);
+    return currentUser == null
+        ? LoginPage(
+            warningMessage: '',
+          )
+        : Top(
+            userId: currentUserId.toString(),
+          );
   }
 }
