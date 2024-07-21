@@ -56,8 +56,8 @@ class TrainingMenuState extends State<TrainingMenu> {
                               context,
                               // MaterialPageRoute(builder: (context) => Training(title: 'どうも',)),
                               MaterialPageRoute(
-                                  builder: (context) => const TakePictureScreen(
-                                      title: 'Pose Detector')),
+                                  builder: (context) => TakePictureScreen(
+                                      title: 'Pose Detector', trainingKeyWord: menu['keyword'],)),
                               // builder: (context) => Firestor()),
                             );
                           },
