@@ -45,7 +45,7 @@ class HomeState extends State<Home> {
   ) {
     List<BarChartGroupData> historyDataList_ = [];
     final formatter = DateFormat('d');
-    if (historyList.length() == 0) return historyDataList_;
+    if (historyList.length == 0) return historyDataList_;
     var trainingDate =
         int.parse(formatter.format(historyList[0]['date'].toDate()));
     var counts = 0.0;
