@@ -48,7 +48,7 @@ class CountPainter extends CustomPainter {
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
@@ -72,7 +72,7 @@ class CountPainter extends CustomPainter {
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
@@ -96,7 +96,7 @@ class CountPainter extends CustomPainter {
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
@@ -120,7 +120,7 @@ class CountPainter extends CustomPainter {
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
@@ -143,7 +143,7 @@ class CountPainter extends CustomPainter {
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
@@ -166,7 +166,30 @@ class CountPainter extends CustomPainter {
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      Offset drawPosition = Offset(
+          (size.width - textPainter.width) * 0.5,
+          90);
+      textPainter.paint(canvas, drawPosition);
+    }
+    else if(count == 2){
+      final poseEnterSpan = TextSpan(
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w900,
+            shadows: [
+              Shadow(offset: Offset(5,5), blurRadius: 4, color: Colors.pink)
+            ]
+        ),
+        text: "お疲れ様でした\nデータを送信します。\n戻る画面を押してください。",
+      );
+      final textPainter = TextPainter(
+        text: poseEnterSpan,
+        textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
