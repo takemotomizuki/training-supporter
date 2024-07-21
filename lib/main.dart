@@ -57,7 +57,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       // 遷移先の画面登録
       body: <Widget>[
         Home(
-          userId: '1',
+          userId: 'n8acZS1IqzOJrUxHKG1HOSeMKoJ2',
         ),
         TrainingMenu(title: "Training Menu"),
       ][currentPageIndex],

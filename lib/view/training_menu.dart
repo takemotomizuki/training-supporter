@@ -32,6 +32,14 @@ class TrainingMenuState extends State<TrainingMenu> {
     final size = MediaQuery.of(context).size;
     const double height = 110;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.amber,
+        title: Text(
+          "Training Supporter",
+          style:
+              TextStyle(fontFamily: "Noto Sans", fontWeight: FontWeight.bold),
+        ),
+      ),
       body: FutureBuilder(
         future: getTrainingMenu(),
         builder: (context, snapshot) {
@@ -42,7 +50,7 @@ class TrainingMenuState extends State<TrainingMenu> {
           } else {
             return Container(
               margin: const EdgeInsets.only(
-                  left: 30, top: 100, right: 30, bottom: 50),
+                  left: 10, top: 10, right: 10, bottom: 10),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -64,9 +72,9 @@ class TrainingMenuState extends State<TrainingMenu> {
                           child: Container(
                             margin: const EdgeInsets.all(5),
                             height: min(height, size.height),
-                            width: size.width - 70,
+                            width: size.width - 30,
                             decoration: BoxDecoration(
-                              color: Colors.orangeAccent,
+                              color: Colors.amber,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             alignment: Alignment.center,
@@ -75,12 +83,14 @@ class TrainingMenuState extends State<TrainingMenu> {
                               children: <Widget>[
                                 SizedBox(
                                   height: height,
-                                  width: size.width / 3,
-                                  child: Center(
+                                  width: size.width * 1.7 / 3,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
                                     child: Text(
-                                      "${menu['name']}\n ${menu['times']}",
+                                      "    ${menu['name']}\n    回数 : ${menu['times']}",
                                       style: const TextStyle(
-                                          fontSize: 24,
+                                          fontSize: 18,
+                                          fontFamily: "Noto Sans",
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),

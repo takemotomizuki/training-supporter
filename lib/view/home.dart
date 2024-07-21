@@ -24,12 +24,13 @@ class HomeState extends State<Home> {
     await Firebase.initializeApp();
     final historyRef = FirebaseFirestore.instance.collection('TrainingHistory');
     final menuRef = FirebaseFirestore.instance.collection('TrainingMenu');
+
     final week = Timestamp.fromDate(DateTime.now().add(Duration(days: 8) * -1));
-    print(week.toDate());
+    // print(week.toDate());
     final snapshot = await historyRef
+        .where("userId", isEqualTo: widget.userId)
         .orderBy("date")
         .where("date", isGreaterThanOrEqualTo: week)
-        // .where("userId", isEqualTo: int.parse(widget.userId))
         .get();
     // .where("date", isGreaterThanOrEqualTo: week)
     // .where("userId", isEqualTo: int.parse(widget.userId))
@@ -44,19 +45,31 @@ class HomeState extends State<Home> {
   ) {
     List<BarChartGroupData> historyDataList_ = [];
     final formatter = DateFormat('d');
-
+    var trainingDate =
+        int.parse(formatter.format(historyList[0]['date'].toDate()));
+    var counts = 0.0;
     for (final history in historyList) {
       print(history.data());
-      print(history['date']);
-      print(history['trainingId']);
-      print(history['userId']);
-      print(history['times']);
-      historyDataList_.add(BarChartGroupData(
-          x: int.parse(formatter.format(history['date'].toDate())),
-          barRods: [
-            BarChartRodData(
-                toY: history['times'].toDouble(), width: 15, color: Colors.blue)
-          ]));
+      print(history['date'].toDate());
+      // print(history['trainingId']);
+      // print(history['userId']);
+      // print(history['times']);
+      if (trainingDate !=
+          int.parse(formatter.format(history['date'].toDate()))) {
+        historyDataList_.add(BarChartGroupData(x: trainingDate, barRods: [
+          BarChartRodData(toY: counts, width: 15, color: Colors.amber)
+        ]));
+        counts = 0.0 + history['times'];
+        trainingDate = int.parse(formatter.format(history['date'].toDate()));
+      } else {
+        counts += history['times'];
+      }
+      trainingDate = int.parse(formatter.format(history['date'].toDate()));
+    }
+    if (counts != 0.0) {
+      historyDataList_.add(BarChartGroupData(x: trainingDate, barRods: [
+        BarChartRodData(toY: counts, width: 15, color: Colors.amber)
+      ]));
     }
     return historyDataList_;
   }
@@ -64,70 +77,90 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    CalendarFormat _calendarFormat = CalendarFormat.month;
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.amber,
+          title: Text(
+            "Training Supporter",
+            style:
+                TextStyle(fontFamily: "Noto Sans", fontWeight: FontWeight.bold),
+          ),
+        ),
         // debugShowCheckedModeBanner: false,
         // title: Home._title,
         // home: FutureBuilder(
         body: FutureBuilder(
-      future: getTrainigHistory(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: Text("LOADING"),
-          );
-        } else {
-          // print('helo');
-          // print(historyDataList.length);
-          print(historyList.length);
-          historyDataList = formatGraphData(historyList);
-          // print(historyDataList.length);
-          return Container(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    child: TableCalendar(
-                      firstDay: DateTime.utc(2010, 1, 1),
-                      lastDay: DateTime.utc(2030, 1, 1),
-                      focusedDay: DateTime.now(),
-                    ),
-                  ),
-                  SizedBox(
-                    width: screenWidth * 0.95,
-                    height: screenWidth * 0.95 * 0.65,
-                    child: BarChart(
-                      BarChartData(
-                        borderData: FlBorderData(
-                          border: const Border(
-                            top: BorderSide.none,
-                            right: BorderSide.none,
-                            left: BorderSide(width: 1),
-                            bottom: BorderSide(width: 1),
-                          ),
+          future: getTrainigHistory(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: Text("LOADING"),
+              );
+            } else {
+              // print('helo');
+              // print(historyDataList.length);
+              // print(historyList.length);
+              historyDataList = formatGraphData(historyList);
+              // print(historyDataList.length);
+              return Container(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        child: TableCalendar(
+                          firstDay: DateTime.utc(2010, 1, 1),
+                          lastDay: DateTime.utc(2030, 1, 1),
+                          focusedDay: DateTime.now(),
+                          calendarFormat: _calendarFormat,
+                          onFormatChanged: (format) {
+                            if (_calendarFormat != format) {
+                              setState(() {
+                                _calendarFormat = CalendarFormat.twoWeeks;
+                              });
+                            }
+                          },
+                          // onDaySelected:(selectedDay, focusedDay) {
+                          //   selectedDay=
+                          // },
                         ),
-                        titlesData: const FlTitlesData(
-                          topTitles: AxisTitles(
-                            axisNameWidget: Text(
-                              "1週間トレーニング履歴",
-                            ),
-                            axisNameSize: 35.0,
-                          ),
-                          rightTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false)),
-                        ),
-                        groupsSpace: 10,
-                        barGroups: historyDataList,
                       ),
-                    ),
+                      SizedBox(
+                        width: screenWidth * 0.95,
+                        height: screenWidth * 0.95 * 0.65,
+                        child: BarChart(
+                          BarChartData(
+                            borderData: FlBorderData(
+                              border: const Border(
+                                top: BorderSide.none,
+                                right: BorderSide.none,
+                                left: BorderSide(width: 1),
+                                bottom: BorderSide(width: 1),
+                              ),
+                            ),
+                            titlesData: const FlTitlesData(
+                              topTitles: AxisTitles(
+                                axisNameWidget: Text(
+                                  "1週間トレーニング履歴",
+                                ),
+                                axisNameSize: 35.0,
+                              ),
+                              rightTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false)),
+                            ),
+                            groupsSpace: 10,
+                            barGroups: historyDataList,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          );
-        }
-      },
-    )
+                ),
+              );
+            }
+          },
+        )
         // home: Card(
         //   shadowColor: Colors.transparent,
         //   margin: EdgeInsets.all(8.0),
