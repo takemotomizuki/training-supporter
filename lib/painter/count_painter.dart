@@ -17,9 +17,11 @@ class CountPainter extends CustomPainter {
     final countSpan = TextSpan(
       style: TextStyle(
         color: Colors.white,
-        backgroundColor: Colors.orange,
         fontSize: 80,
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w900,
+        shadows: [
+          Shadow(offset: Offset(5,5), blurRadius: 4, color: Colors.black)
+        ]
       ),
       text: count.toString(),
     );
@@ -36,57 +38,142 @@ class CountPainter extends CustomPainter {
       final poseEnterSpan = TextSpan(
         style: TextStyle(
           color: Colors.white,
-          backgroundColor: Colors.red,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+          fontSize: 25,
+          fontWeight: FontWeight.w900,
+          shadows: [
+            Shadow(offset: Offset(5,5), blurRadius: 4, color: Colors.black)
+          ]
         ),
         text: "初期位置について",
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.left,
+        textAlign: TextAlign.right,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
-      textPainter.paint(canvas, const Offset(110, 30));
+      Offset drawPosition = Offset(
+          (size.width - textPainter.width) * 0.5,
+          (size.height));
+      textPainter.paint(canvas, drawPosition);
     }
     if(poseEntered && !poseDowned) {
       // トレーニングの回数を表示
       final poseEnterSpan = TextSpan(
         style: TextStyle(
           color: Colors.white,
-          backgroundColor: Colors.red,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+          fontSize: 25,
+          fontWeight: FontWeight.w900,
+          shadows: [
+            Shadow(offset: Offset(5,5), blurRadius: 4, color: Colors.black)
+          ]
         ),
         text: "腰を落として",
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.left,
+        textAlign: TextAlign.right,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
-      textPainter.paint(canvas, const Offset(110, 30));
+      Offset drawPosition = Offset(
+          (size.width - textPainter.width) * 0.5,
+          (size.height));
+      textPainter.paint(canvas, drawPosition);
     }
     if(poseEntered && poseDowned) {
       // トレーニングの回数を表示
       final poseEnterSpan = TextSpan(
         style: TextStyle(
           color: Colors.white,
-          backgroundColor: Colors.red,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+          fontSize: 25,
+          fontWeight: FontWeight.w900,
+          shadows: [
+            Shadow(offset: Offset(5,5), blurRadius: 4, color: Colors.black)
+          ]
         ),
         text: "元の位置に戻って",
       );
       final textPainter = TextPainter(
         text: poseEnterSpan,
-        textAlign: TextAlign.left,
+        textAlign: TextAlign.right,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
-      textPainter.paint(canvas, const Offset(110, 30));
+      Offset drawPosition = Offset(
+          (size.width - textPainter.width) * 0.5,
+          (size.height));
+      textPainter.paint(canvas, drawPosition);
+    }
+
+    if(count == 5){
+      final poseEnterSpan = TextSpan(
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w900,
+            shadows: [
+              Shadow(offset: Offset(5,5), blurRadius: 4, color: Colors.pink)
+            ]
+        ),
+        text: "がんばって！",
+      );
+      final textPainter = TextPainter(
+        text: poseEnterSpan,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      Offset drawPosition = Offset(
+          (size.width - textPainter.width) * 0.5,
+          90);
+      textPainter.paint(canvas, drawPosition);
+    }
+    else if(count == 10){
+      final poseEnterSpan = TextSpan(
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w900,
+            shadows: [
+              Shadow(offset: Offset(5,5), blurRadius: 4, color: Colors.pink)
+            ]
+        ),
+        text: "あと半分！",
+      );
+      final textPainter = TextPainter(
+        text: poseEnterSpan,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      Offset drawPosition = Offset(
+          (size.width - textPainter.width) * 0.5,
+          90);
+      textPainter.paint(canvas, drawPosition);
+    }
+    else if(count == 15){
+      final poseEnterSpan = TextSpan(
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w900,
+            shadows: [
+              Shadow(offset: Offset(5,5), blurRadius: 4, color: Colors.pink)
+            ]
+        ),
+        text: "ラストスパート！",
+      );
+      final textPainter = TextPainter(
+        text: poseEnterSpan,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      Offset drawPosition = Offset(
+          (size.width - textPainter.width) * 0.5,
+          90);
+      textPainter.paint(canvas, drawPosition);
     }
   }
 
