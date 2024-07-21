@@ -1,33 +1,26 @@
-import 'package:app/view/signup.dart';
 import 'package:app/view/top.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'package:app/dataaccess/authentication_user.dart';
 
-class LoginPage extends StatefulWidget {
-  LoginPage({super.key, required this.warningMessage});
+import 'login.dart';
+
+class SignupPage extends StatefulWidget {
+  SignupPage({super.key, required this.warningMessage});
   final String warningMessage;
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   bool _isObscure = true;
   String email = "";
   String password = "";
+  String passwordCheck = "";
 
 
-
-  void _navigateToSignUp() {
-    // アカウント作成画面へのナビゲーションロジックをここに追加
-    print("アカウント作成画面へ移動");
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (BuildContext context) =>  SignupPage(warningMessage: "",))
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +41,8 @@ class _LoginPageState extends State<LoginPage> {
                 width: MediaQuery.of(context).size.width,
                 //height: MediaQuery.of(context).size.height*0.04,
                 child: Text(
-                    widget.warningMessage,
-                    style: TextStyle(color: Colors.red),
+                  widget.warningMessage,
+                  style: TextStyle(color: Colors.red),
                 ),
                 /*decoration: BoxDecoration(
                   border: Border.all(color: Colors.redAccent),
@@ -58,11 +51,10 @@ class _LoginPageState extends State<LoginPage> {
               ): Container(),
 
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
                   decoration: const InputDecoration(
-                    labelText: 'メールアドレス',
+                    labelText: 'メールアドレスを入力してください',
                   ),
                   onChanged: (String value) {
                     setState(() {
@@ -72,8 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
                   obscureText: _isObscure,
                   decoration: InputDecoration(
@@ -89,19 +80,34 @@ class _LoginPageState extends State<LoginPage> {
                           })),
                   onChanged: (String value) {
                     setState(() {
-                      password = value;
+                      password= value;
                     });
                   },
                 ),
               ),
-              GestureDetector(
-                onTap: _navigateToSignUp,
-                child: Text(
-                  'アカウント作成はこちら',
-                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
-                  textAlign: TextAlign.center,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                child: TextFormField(
+                  obscureText: _isObscure,
+                  decoration: InputDecoration(
+                      labelText: 'パスワード（確認）',
+                      suffixIcon: IconButton(
+                          icon: Icon(_isObscure
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _isObscure = !_isObscure;
+                            });
+                          })),
+                  onChanged: (String value) {
+                    setState(() {
+                      passwordCheck= value;
+                    });
+                  },
                 ),
               ),
+
 
 
 
@@ -109,25 +115,18 @@ class _LoginPageState extends State<LoginPage> {
               Center(
                 child: ElevatedButton(
                     onPressed: () async {
-                      final loginSuccess = await AuthenticationUser.authenticate(email, password);
-
-                      // Navigator.push(
-                      //   context,
-                      //   //ログインできたかどうかで遷移先を選択
-                      //   loginSuccess == true ?
-                      //   MaterialPageRoute(builder: (context) => Home()):
-                      //   MaterialPageRoute(builder: (context) => LoginPage(), allowSnapshotting: false),
-                      // );
+                      final signupSuccess = await AuthenticationUser.signup(email, password, passwordCheck);
 
                       Navigator.pushReplacement(
-                        context,
-                          loginSuccess == true ?
-                            MaterialPageRoute(builder: (BuildContext context) =>  Top(userId: email,)):
-                            MaterialPageRoute(builder: (BuildContext context) =>  LoginPage(warningMessage: "入力が間違っています。",))
+                          context,
+                          signupSuccess == true ?
+                          MaterialPageRoute(builder: (BuildContext context) =>  Top(userId: email,)):
+                          MaterialPageRoute(builder: (BuildContext context) =>  SignupPage(warningMessage: "アカウント作成に失敗しました",))
                       );
 
                     },
-                    child: Text('ログイン')),
+                    child: Text('ログイン')
+                ),
               ),
             ],
           ),
