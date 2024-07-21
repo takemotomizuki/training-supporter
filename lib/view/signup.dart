@@ -120,8 +120,8 @@ class _SignupPageState extends State<SignupPage> {
                       Navigator.pushReplacement(
                           context,
                           signupSuccess == true ?
-                          MaterialPageRoute(builder: (BuildContext context) =>  Top(userId: '',)):
-                          MaterialPageRoute(builder: (BuildContext context) =>  SignupPage(warningMessage: "入力が間違っています。",))
+                          MaterialPageRoute(builder: (BuildContext context) =>  Top(userId: email,)):
+                          MaterialPageRoute(builder: (BuildContext context) =>  SignupPage(warningMessage: "アカウント作成に失敗しました",))
                       );
 
                     },

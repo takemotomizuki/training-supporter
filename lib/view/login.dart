@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.pushReplacement(
                         context,
                           loginSuccess == true ?
-                            MaterialPageRoute(builder: (BuildContext context) =>  Top(userId: '',)):
+                            MaterialPageRoute(builder: (BuildContext context) =>  Top(userId: email,)):
                             MaterialPageRoute(builder: (BuildContext context) =>  LoginPage(warningMessage: "入力が間違っています。",))
                       );
 
