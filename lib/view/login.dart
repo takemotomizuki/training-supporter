@@ -58,7 +58,8 @@ class _LoginPageState extends State<LoginPage> {
               ): Container(),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'メールアドレス',
@@ -71,7 +72,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
                   obscureText: _isObscure,
                   decoration: InputDecoration(
@@ -87,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                           })),
                   onChanged: (String value) {
                     setState(() {
-                      password= value;
+                      password = value;
                     });
                   },
                 ),
@@ -125,8 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
 
                     },
-                    child: Text('ログイン')
-                ),
+                    child: Text('ログイン')),
               ),
             ],
           ),
