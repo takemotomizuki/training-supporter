@@ -1,7 +1,14 @@
+import 'dart:io';
+
+import 'package:app/dataaccess/authentication_user.dart';
+import 'package:app/main.dart';
 import 'package:app/painter/count_painter.dart';
 import 'package:app/pose_detection/pose_classifier_processor.dart';
 import 'package:app/view/camera_view.dart';
 import 'package:app/pose_detection/pose_detector.dart';
+import 'package:app/view/top.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:camera/camera.dart';
@@ -23,6 +30,8 @@ class TakePictureScreen extends StatefulWidget {
     super.key,
     required this.title,
     required this.trainingKeyWord,
+    required this.trainingId,
+    required this.finishCount,
     this.onDetectorViewModeChanged,
     this.initialDetectionMode = DetectorViewMode.liveFeed,
     this.onCameraFeedReady,
@@ -31,11 +40,14 @@ class TakePictureScreen extends StatefulWidget {
 
   final String title;
   final String trainingKeyWord;
+  final num finishCount;
+  final num trainingId;
   final DetectorViewMode initialDetectionMode;
   final Function(DetectorViewMode mode)? onDetectorViewModeChanged;
   final Function()? onCameraFeedReady;
 
   var _poseClassifierProcessor;
+
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -68,11 +80,14 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   CustomPaint? _customPaint;
   String? _text;
   late DetectorViewMode _mode;
+
+  CollectionReference? trainingHistoryCollection = null;
+  bool isSaved = false;
   @override
   void initState() {
     _mode = widget.initialDetectionMode;
     super.initState();
-
+    trainingHistoryCollection = FirebaseFirestore.instance.collection('TrainingHistory');
   }
 
   @override
@@ -89,6 +104,17 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         isStreamMode: true,
         trainingKeyword: widget.trainingKeyWord,
       );
+    }
+
+    if(count == widget.finishCount && !isSaved){
+      isSaved = true;
+      final currentUser = FirebaseAuth.instance.currentUser;
+      final ref = trainingHistoryCollection!.add({
+        "date": DateTime.now(),
+        "times": count,
+        "trainingId": widget.trainingId,
+        "userId": currentUser!.uid,
+      });
     }
     Future<void> _processImage(InputImage inputImage) async {
       _isBusy = true;
