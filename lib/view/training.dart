@@ -27,12 +27,6 @@ class TakePictureScreen extends StatefulWidget {
     this.initialDetectionMode = DetectorViewMode.liveFeed,
     this.onCameraFeedReady,
   }) {
-    if(_poseClassifierProcessor == null) {
-      _poseClassifierProcessor = PoseClassifierProcessor(
-        isStreamMode: true,
-        trainingKeyword: trainingKeyWord,
-      );
-    }
   }
 
   final String title;
@@ -41,7 +35,7 @@ class TakePictureScreen extends StatefulWidget {
   final Function(DetectorViewMode mode)? onDetectorViewModeChanged;
   final Function()? onCameraFeedReady;
 
-  static var _poseClassifierProcessor;
+  var _poseClassifierProcessor;
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -90,6 +84,12 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget._poseClassifierProcessor == null) {
+      widget._poseClassifierProcessor = PoseClassifierProcessor(
+        isStreamMode: true,
+        trainingKeyword: widget.trainingKeyWord,
+      );
+    }
     Future<void> _processImage(InputImage inputImage) async {
       _isBusy = true;
       setState(() {
@@ -106,7 +106,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       if (inputImage.metadata?.size != null &&
           inputImage.metadata?.rotation != null &&
           poses.length != 0 ) {
-        final poseResult = await TakePictureScreen._poseClassifierProcessor.getPoseResult(poses.first);
+        final poseResult = await widget._poseClassifierProcessor.getPoseResult(poses.first);
         if(poseResult.first.contains(widget.trainingKeyWord)){
           count = int.parse(poseResult.first.split(':').elementAt(1));
           poseEntered = bool.parse(poseResult.first.split(':').elementAt(2));
